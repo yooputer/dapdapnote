@@ -1,0 +1,46 @@
+version: '3'
+services:
+  dapdapnote-postgres:
+    build: ./dapdapnote-postgresql
+    image: dapdapnote-postgres:1.0.0
+    volumes:
+      - dapdapnote-volume:/var/lib/postgresql/data
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 256M
+    restart: always
+
+  dapdapnote-backend:
+    build: ./dapdapnote-backend
+    image: dapdapnote-backend:1.0.0
+    environment:
+      - DB_URL=dapdapnote-postgres
+    depends_on:
+      - dapdapnote-postgres
+    deploy:
+      resources:
+        limits:
+          cpus: '1.5'
+          memory: 512M
+    restart: on-failure
+
+  dapdapnote-front:
+    build: ./dapdapnote-front
+    image: dapdapnote-frontend:1.0.0
+    environment:
+      - BACKEND_HOST=dapdapnote-backend
+    ports:
+      - 80:80
+    depends_on:
+      - dapdapnote-backend
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 64M
+    restart: on-failure
+
+volumes:
+  dapdapnote-volume:
