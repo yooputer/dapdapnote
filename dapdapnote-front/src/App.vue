@@ -8,7 +8,7 @@ import api from "@/api/api";
 
 const str = ref('');
 
-api.get(`/api`)
+api.get(`/api/`)
     .then(response => {
       console.log(response)
       str.value = response.data;
