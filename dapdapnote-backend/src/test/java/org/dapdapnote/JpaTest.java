@@ -1,18 +1,21 @@
 package org.dapdapnote;
 
 
-import org.dapdapnote.entity.DdNoteEntity;
+import org.dapdapnote.entity.AnswerEntity;
 import org.dapdapnote.entity.GroupEntity;
+import org.dapdapnote.entity.QuestionEntity;
 import org.dapdapnote.entity.UserEntity;
-import org.dapdapnote.enums.DdNoteType;
-import org.dapdapnote.repository.DdNoteRepository;
+import org.dapdapnote.repository.AnswerRepository;
 import org.dapdapnote.repository.GroupRepository;
+import org.dapdapnote.repository.QuestionRepository;
 import org.dapdapnote.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.annotation.Rollback;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -27,7 +30,10 @@ public class JpaTest {
     private GroupRepository groupRepository;
 
     @Autowired
-    private DdNoteRepository ddNoteRepository;
+    private QuestionRepository questionRepository;
+
+    @Autowired
+    private AnswerRepository answerRepository;
 
     @Test
     public void testCreateUserAndGroups() {
@@ -69,22 +75,48 @@ public class JpaTest {
     }
 
     @Test
-    public void testCreateDdNotes() {
-        UserEntity user = userRepository.findByUserId("yoojin027").orElseThrow();
+    public void testCreateQuestionAndAnswer() {
+        UserEntity user = userRepository.findByUserId("yoojin027")
+                .orElseThrow();
 
-        DdNoteEntity question1 = DdNoteEntity.builder()
-                .type(DdNoteType.Q)
-                .content("겁먹다")
+        QuestionEntity question1 = QuestionEntity.builder()
+                .content("겁을 먹다")
                 .writer(user)
                 .build();
-        ddNoteRepository.save(question1);
+        questionRepository.save(question1);
 
-        DdNoteEntity answer1 = DdNoteEntity.builder()
-                .type(DdNoteType.A)
+        AnswerEntity answer1 = AnswerEntity.builder()
                 .content("get scared")
                 .writer(user)
-                .parentDdNote(question1)
+                .question(question1)
                 .build();
-        ddNoteRepository.save(answer1);
+        answerRepository.save(answer1);
+
+        AnswerEntity answer2 = AnswerEntity.builder()
+                .content("get afraid")
+                .writer(user)
+                .question(question1)
+                .build();
+        answerRepository.save(answer2);
+
+
+        QuestionEntity question2 = questionRepository.findById(question1.getSeq())
+                .orElseThrow();
+        question2.getAnswers().add(answer1);
+        question2.getAnswers().add(answer2);
+        questionRepository.save(question2);
+    }
+
+    @Test
+    public void findAll() {
+        List<QuestionEntity> questions = questionRepository.findAll();
+        questions.forEach(q -> {
+            System.out.println("질문 : " + q.getContent());
+            q.getAnswers().forEach(a ->{
+                System.out.println("답변 : " + a.getContent());
+            });
+
+            System.out.println();
+        });
     }
 }
