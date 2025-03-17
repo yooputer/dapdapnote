@@ -2,7 +2,9 @@ package org.dapdapnote;
 
 
 import lombok.RequiredArgsConstructor;
+import org.dapdapnote.dto.question.CreateQuestionRequest;
 import org.dapdapnote.dto.question.QuestionDto;
+import org.dapdapnote.entity.QuestionEntity;
 import org.dapdapnote.entity.UserEntity;
 import org.dapdapnote.repository.QuestionRepository;
 import org.dapdapnote.repository.UserRepository;
@@ -18,7 +20,15 @@ public class QuestionService {
 
     public List<QuestionDto> getMyQuestions() {
         UserEntity user = userRepository.findByUserId("yoojin027")
-                        .orElseThrow();
+                        .orElse(UserEntity.builder()
+                                .userId("yoojin027")
+                                .name("김유진")
+                                .password("12345678")
+                                .build());
+
+        if (user.getSeq() == null) {
+            userRepository.save(user);
+        }
         List<QuestionDto> questions = questionRepository.findAllByWriter(user).stream()
                 .map(QuestionDto::new)
                 .toList();
@@ -26,4 +36,25 @@ public class QuestionService {
         return questions;
     }
 
+    public Long createQuestion(CreateQuestionRequest request) {
+        UserEntity user = userRepository.findByUserId("yoojin027")
+                .orElse(UserEntity.builder()
+                        .userId("yoojin027")
+                        .name("김유진")
+                        .password("12345678")
+                        .build());
+
+        if (user.getSeq() == null) {
+            userRepository.save(user);
+        }
+
+        QuestionEntity question = QuestionEntity.builder()
+                .content(request.getContent())
+                .writer(user)
+                .build();
+
+        questionRepository.save(question);
+
+        return question.getSeq();
+    }
 }
