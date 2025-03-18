@@ -2,6 +2,7 @@ package org.dapdapnote.dto.answer;
 
 import lombok.*;
 import org.dapdapnote.entity.AnswerEntity;
+import org.dapdapnote.utils.DateUtil;
 
 import java.time.LocalDateTime;
 
@@ -15,15 +16,15 @@ public class AnswerDto {
     private String content;
     private Long writerSeq;
     private String writerName;
-    private LocalDateTime regDate;
-    private LocalDateTime modDate;
+    private String regDateStr;
+    private String regTimeStr;
 
     public AnswerDto(AnswerEntity entity) {
         seq = entity.getSeq();
         content = entity.getContent();
         writerSeq = entity.getWriter().getSeq();
         writerName = entity.getWriter().getName();
-        regDate = entity.getRegDate();
-        modDate = entity.getModDate();
+        regDateStr = DateUtil.toDateStr(entity.getRegDate());
+        regTimeStr = DateUtil.toTimeStr(entity.getRegDate());
     }
 }

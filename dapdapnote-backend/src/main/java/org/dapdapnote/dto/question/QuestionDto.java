@@ -4,6 +4,7 @@ import lombok.*;
 import org.dapdapnote.dto.answer.AnswerDto;
 import org.dapdapnote.entity.QuestionEntity;
 import org.dapdapnote.enums.AnswerPermission;
+import org.dapdapnote.utils.DateUtil;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,8 +23,8 @@ public class QuestionDto {
     private String groupName;
     private AnswerPermission answerPermission;
     private List<AnswerDto> answerList;
-    private LocalDateTime regDate;
-    private LocalDateTime modDate;
+    private String regDateStr;
+    private String regTimeStr;
 
     public QuestionDto(QuestionEntity entity) {
         seq = entity.getSeq();
@@ -31,18 +32,12 @@ public class QuestionDto {
         writerSeq = entity.getWriter().getSeq();
         writerName = entity.getWriter().getName();
         answerPermission = entity.getAnswerPermission();
-        regDate = entity.getRegDate();
-        modDate = entity.getModDate();
+        regDateStr = DateUtil.toDateStr(entity.getRegDate());
+        regTimeStr = DateUtil.toTimeStr(entity.getRegDate());
 
         if (entity.getGroup() != null) {
             groupSeq = entity.getGroup().getSeq();
             groupName = entity.getGroup().getName();
-        }
-
-        if (entity.getAnswers() != null) {
-            answerList = entity.getAnswers().stream()
-                    .map(AnswerDto::new)
-                    .toList();
         }
     }
 }
