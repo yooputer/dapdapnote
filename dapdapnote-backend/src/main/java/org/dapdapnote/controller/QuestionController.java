@@ -1,7 +1,7 @@
 package org.dapdapnote.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.dapdapnote.QuestionService;
+import org.dapdapnote.service.QuestionService;
 import org.dapdapnote.dto.question.CreateQuestionRequest;
 import org.dapdapnote.dto.question.QuestionDto;
 import org.springframework.http.ResponseEntity;

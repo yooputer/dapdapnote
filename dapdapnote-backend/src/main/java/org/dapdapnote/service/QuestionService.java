@@ -1,11 +1,14 @@
-package org.dapdapnote;
+package org.dapdapnote.service;
 
 
 import lombok.RequiredArgsConstructor;
+import org.dapdapnote.dto.answer.AnswerDto;
 import org.dapdapnote.dto.question.CreateQuestionRequest;
 import org.dapdapnote.dto.question.QuestionDto;
+import org.dapdapnote.entity.AnswerEntity;
 import org.dapdapnote.entity.QuestionEntity;
 import org.dapdapnote.entity.UserEntity;
+import org.dapdapnote.repository.AnswerRepository;
 import org.dapdapnote.repository.QuestionRepository;
 import org.dapdapnote.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -17,6 +20,7 @@ import java.util.List;
 public class QuestionService {
     private final UserRepository userRepository;
     private final QuestionRepository questionRepository;
+    private final AnswerRepository answerRepository;
 
     public List<QuestionDto> getMyQuestions() {
         UserEntity user = userRepository.findByUserId("yoojin027")
@@ -32,6 +36,15 @@ public class QuestionService {
         List<QuestionDto> questions = questionRepository.findAllByWriter(user).stream()
                 .map(QuestionDto::new)
                 .toList();
+
+        for (QuestionDto question : questions) {
+            List<AnswerDto> answers = answerRepository.findAllByQuestionSeq(question.getSeq())
+                    .stream()
+                    .map(AnswerDto::new)
+                    .toList();
+
+            question.setAnswerList(answers);
+        }
 
         return questions;
     }
