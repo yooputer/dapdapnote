@@ -8,8 +8,6 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity(name = "questions")
 @NoArgsConstructor
@@ -36,10 +34,6 @@ public class QuestionEntity {
     @Enumerated(EnumType.STRING)
     @Builder.Default
     private AnswerPermission answerPermission = AnswerPermission.PRIVATE;
-
-    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @Builder.Default
-    private List<AnswerEntity> answers = new ArrayList<>();
 
     @CreatedDate
     @Column(updatable = false)
