@@ -20,28 +20,44 @@
 <!--      </div>-->
 
       <template v-for="question in questions" :key="question.seq">
-        <div class="message-container sent-container">
+        <div class="message-container sent-container" @click="answerQuestion = question">
           <div class="message sent">
             {{ question.content }}
           </div>
-          <div class="message-time">오전 10:30</div>
+          <div class="message-time">{{ question.regTimeStr }}</div>
         </div>
 
-<!--        TODO 답변 달기 & 조회 구현-->
-<!--        <div class="message-container received-container">-->
-<!--          <div class="message received">-->
-<!--            get scared-->
-<!--          </div>-->
-<!--          <div class="message-time">오전 10:30</div>-->
-<!--        </div>-->
+        <div class="message-container received-container" v-for="answer in question.answerList" :key="answer.seq">
+          <div class="message received">
+            {{ answer.content }}
+          </div>
+          <div class="message-time">{{ answer.regTimeStr }}</div>
+        </div>
       </template>
 
     </div>
 
-    <div class="chat-input">
-      <button class="attachment-button">#</button>
-      <input type="text" class="message-input" placeholder="잊기전에 빨리 적자" v-model="newQuestion">
-      <button class="send-button" @click="addQuestion">+</button>
+    <div class="reply-container" v-if="!answerQuestion">
+      <div class="chat-input">
+        <button class="attachment-button">#</button>
+        <input type="text" class="message-input" placeholder="잊기전에 빨리 적자" v-model="inputStr">
+        <button class="send-button" @click="addQuestion">+</button>
+      </div>
+    </div>
+
+    <div class="reply-container" v-if="answerQuestion">
+      <div class="header-row">
+        <div class="reply-content">{{ answerQuestion.content }}</div>
+        <button class="close-button" @click="answerQuestion = null">×</button>
+      </div>
+
+      <div class="reply-actions">
+        <div class="reply-left">
+          <div class="reply-icon">↪</div>
+          <input type="text" class="message-input" v-model="inputStr">
+        </div>
+        <div class="send-button" @click="addAnswer">+</div>
+      </div>
     </div>
   </div>
 </template>
@@ -51,22 +67,40 @@ import { onMounted, ref } from 'vue';
 import api from "@/api/api";
 
 const questions = ref([]);
-const newQuestion = ref('');
+const inputStr = ref('');
+const answerQuestion = ref(null);
 
 onMounted(() => {
   fetchQuestions();
 })
 
 function addQuestion(){
-  if (!newQuestion.value || !newQuestion.value.toString().trim()) {
+  if (!inputStr.value || !inputStr.value.toString().trim()) {
     alert("내용을 입력해주세요. ");
     return;
   }
 
-  api.post(`/api/question`, { content: newQuestion.value })
+  api.post(`/api/question`, { content: inputStr.value })
       .then(response => {
-          newQuestion.value = '';
+        inputStr.value = '';
           fetchQuestions();
+      })
+      .catch(error => {
+        console.log(error);
+      });
+}
+
+function addAnswer(){
+  if (!inputStr.value || !inputStr.value.toString().trim()) {
+    alert("내용을 입력해주세요. ");
+    return;
+  }
+
+  api.post(`/api/answer`, { content: inputStr.value, questionSeq: answerQuestion.value.seq})
+      .then(response => {
+        answerQuestion.value = null;
+        inputStr.value = '';
+        fetchQuestions();
       })
       .catch(error => {
         console.log(error);

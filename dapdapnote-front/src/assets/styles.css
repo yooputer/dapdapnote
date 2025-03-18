@@ -140,18 +140,92 @@ body {
     text-align: right;
 }
 
+.reply-container {
+    background-color: white;
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    position: relative;
+}
+
+.header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.close-button {
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: #999;
+    cursor: pointer;
+    padding: 0;
+    margin: auto 5px;
+}
+
+.reply-content {
+    background-color: #f8f8f8;
+    border: 1px solid #eee;
+    border-radius: 3px;
+    padding: 10px;
+    margin-bottom: 10px;
+    font-size: 14px;
+    color: #666;
+    line-height: 1.5;
+    width: calc(100% - 22px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.reply-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 15px;
+}
+
+.reply-left {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+}
+
+.reply-icon {
+    color: #888;
+    font-size: 20px;
+}
+
+.reply-placeholder {
+    color: #888;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    padding: 8px 15px;
+    flex-grow: 1;
+}
+
+.add-button {
+    width: 30px;
+    height: 30px;
+    background-color: #f0f0f0;
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 10px;
+    font-size: 20px;
+    color: #666;
+    cursor: pointer;
+}
+
 .chat-input {
     display: flex;
     padding: 12px;
-    border-top: 1px solid #eee;
-    background-color: white;
     align-items: center;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 10;
-    max-width: 480px;
     margin: 0 auto;
 }
 
