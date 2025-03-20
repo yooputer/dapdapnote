@@ -18,53 +18,51 @@ function addWord(){
 </script>
 
 <template>
-  <div class="app-container">
-    <div class="app-header">
-      영어작문 마스터
-    </div>
+  <div class="app-header">
+    영어작문 마스터
+  </div>
 
-    <div class="korean-section">
-      <div class="label-section">
-        <div class="section-label">내가 표현하고 싶은 문장(한국어)</div>
-      </div>
-      <textarea class="korean-textarea" v-model="koreanInput"/>
+  <div class="korean-section">
+    <div class="label-section">
+      <div class="section-label">내가 표현하고 싶은 문장(한국어)</div>
     </div>
+    <textarea class="korean-textarea" v-model="koreanInput"/>
+  </div>
 
-    <div class="options-section">
-      <div class="label-section">
-        <div class="section-label">문장에 필요한 어휘</div>
-        <div class="add-word-btn" @click="addWord">+</div>
+  <div class="options-section">
+    <div class="label-section">
+      <div class="section-label">문장에 필요한 어휘</div>
+      <div class="add-word-btn" @click="addWord">+</div>
 <!--        <div class="ai-word-btn">AI 어휘 추천</div>--> <!-- TODO AI 어휘 추천 기능 구현 -->
-      </div>
-
-      <div class="words">
-        <div class="word-item" v-for="(word, index) in wordList" :key="word.korean" @click="selectedWordIndex = index">
-          {{ word.korean }}
-        </div>
-      </div>
-
-      <div class="option-item" v-if="selectedWordIndex != null">
-        <div class="option-info">
-          <div class="option-text">{{ wordList[selectedWordIndex].korean }}</div>
-          <div class="option-english" v-for="english in wordList[selectedWordIndex].englishList" :key="english">- {{ english }}</div>
-        </div>
-        <button class="delete-word-btn" @click="selectedWordIndex = null">×</button>
-      </div>
-    </div>
-    <div class="result-section">
-      <div class="label-section">
-        <div class="section-label">내가 표현한 문장(영어)</div>
-      </div>
-      <textarea class="english-textarea" v-model="englishInput"/>
     </div>
 
-    <div class="buttons-container">
-      <select class="status-select">
-        <option value="unsolved">미해결</option>
-        <option value="solved">해결</option>
-      </select>
-      <button class="btn btn-save">저장</button>
+    <div class="words">
+      <div class="word-item" v-for="(word, index) in wordList" :key="word.korean" @click="selectedWordIndex = index">
+        {{ word.korean }}
+      </div>
     </div>
+
+    <div class="option-item" v-if="selectedWordIndex != null">
+      <div class="option-info">
+        <div class="option-text">{{ wordList[selectedWordIndex].korean }}</div>
+        <div class="option-english" v-for="english in wordList[selectedWordIndex].englishList" :key="english">- {{ english }}</div>
+      </div>
+      <button class="delete-word-btn" @click="selectedWordIndex = null">×</button>
+    </div>
+  </div>
+  <div class="result-section">
+    <div class="label-section">
+      <div class="section-label">내가 표현한 문장(영어)</div>
+    </div>
+    <textarea class="english-textarea" v-model="englishInput"/>
+  </div>
+
+  <div class="buttons-container">
+    <select class="status-select">
+      <option value="unsolved">미해결</option>
+      <option value="solved">해결</option>
+    </select>
+    <button class="btn btn-save">저장</button>
   </div>
 </template>
 
