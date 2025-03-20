@@ -3,37 +3,30 @@ package org.dapdapnote.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
-@Entity(name = "answers")
+@Entity(name = "users")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @Builder
 @EntityListeners(AuditingEntityListener.class)
-public class AnswerEntity {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
 
-    private String content;
+    @Column(unique = true, updatable = false)
+    private String userId;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "writer_seq")
-    private UserEntity writer;
+    private String name;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "question_seq")
-    private QuestionEntity question;
+    private String password;
 
     @CreatedDate
     @Column(updatable = false)
     private LocalDateTime regDate;
-
-    @LastModifiedDate
-    private LocalDateTime modDate;
 }
