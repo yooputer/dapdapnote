@@ -1,6 +1,9 @@
 <script setup>
 import {ref} from "vue";
+import EditWordModal from "@/components/EditWordModal.vue";
 
+const showModal = ref(false);
+const modalType = ref('');
 const koreanInput = ref('최근에 운전면허를 땄어. \n차를 살 생각이 전혀 없었는데, \n운전면허를 따니까 차를 사고 싶어지더라. \n그래서 중고차 가격을 알아보는 중이야');
 const englishInput = ref('');
 const wordList = ref([
@@ -12,12 +15,37 @@ const wordList = ref([
 ]);
 const selectedWordIndex = ref(null);
 
-function addWord(){
-// TODO 어휘 추가 기능 구현
+function saveWord(word, index){
+  if (!index) {
+    wordList.value.push(word);
+  }else{
+    wordList.value[index] = word;
+  }
+}
+
+function deleteWord(){
+  wordList.value.splice(selectedWordIndex.value, 1);
+  selectedWordIndex.value = null;
+}
+
+function openEditWordModal(isNew = false){
+  if (isNew) {
+    selectedWordIndex.value = null;
+  }
+  modalType.value = 'editWord';
+  showModal.value = true;
 }
 </script>
 
 <template>
+  <EditWordModal
+      v-if="showModal && modalType === 'editWord'"
+      :word="selectedWordIndex ? wordList[selectedWordIndex] : {}"
+      :index="selectedWordIndex"
+      @saveWord="saveWord"
+      @closeModal="showModal = false; modalType = ''"
+  />
+
   <div class="app-header">
     영어작문 마스터
   </div>
@@ -32,7 +60,7 @@ function addWord(){
   <div class="options-section">
     <div class="label-section">
       <div class="section-label">문장에 필요한 어휘</div>
-      <div class="add-word-btn" @click="addWord">+</div>
+      <div class="add-word-btn" @click="openEditWordModal(true)">+</div>
 <!--        <div class="ai-word-btn">AI 어휘 추천</div>--> <!-- TODO AI 어휘 추천 기능 구현 -->
     </div>
 
@@ -43,11 +71,15 @@ function addWord(){
     </div>
 
     <div class="option-item" v-if="selectedWordIndex != null">
+      <button class="delete-word-btn" @click="selectedWordIndex = null">×</button>
       <div class="option-info">
         <div class="option-text">{{ wordList[selectedWordIndex].korean }}</div>
         <div class="option-english" v-for="english in wordList[selectedWordIndex].englishList" :key="english">- {{ english }}</div>
       </div>
-      <button class="delete-word-btn" @click="selectedWordIndex = null">×</button>
+      <div class="option-actions">
+        <button class="option-btn delete-btn" @click="deleteWord">삭제</button>
+        <button class="option-btn edit-btn" @click="openEditWordModal">수정</button>
+      </div>
     </div>
   </div>
   <div class="result-section">
@@ -146,7 +178,7 @@ textarea:focus {
 
 .option-item {
   margin-bottom: 12px;
-  display: flex;
+  display: block;
   align-items: center;
   justify-content: space-between;
   padding: 10px 15px;
@@ -154,10 +186,10 @@ textarea:focus {
   border: 1px solid #e0e0e0;
   background-color: white;
   margin-top: 15px;
+  position: relative;
 }
 
 .option-info {
-  display: flex;
   flex-direction: column;
   margin-left: 15px;
   margin-right: auto;
@@ -216,8 +248,10 @@ textarea:focus {
   transition: background-color 0.3s ease;
   font-size: 12px;
   line-height: 1;
-  margin-top: 5px;
-  margin-bottom: auto;
+
+  position: absolute;
+  right: -9px;
+  top: -9px;
 }
 
 .result-section {
@@ -276,5 +310,27 @@ textarea:focus {
   display: flex; /* Flexbox를 사용하여 수평 정렬 */
   align-items: center; /* 수직으로 중앙 정렬 */
   cursor: pointer;
+}
+
+.option-actions{
+  display: flex;
+  align-items: center;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.option-btn{
+  padding: 3px 6px; /* 여백 조정 */
+  border: none;
+  cursor: pointer;
+  border-radius: 5px; /* 둥근 모서리 */
+}
+
+.option-btn.edit-btn{
+  margin-left: 10px;
+}
+.option-btn.delete-btn{
+  margin-left: auto;
+  color: darkred;
 }
 </style>
