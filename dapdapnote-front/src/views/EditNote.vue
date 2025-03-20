@@ -1,5 +1,20 @@
 <script setup>
+import {ref} from "vue";
 
+const koreanInput = ref('최근에 운전면허를 땄어. \n차를 살 생각이 전혀 없었는데, \n운전면허를 따니까 차를 사고 싶어지더라. \n그래서 중고차 가격을 알아보는 중이야');
+const englishInput = ref('');
+const wordList = ref([
+    {korean: '최근', englishList: ['Recently', 'Nowadays']},
+    {korean: '운전면허', englishList: ['Driver\'s License']},
+    {korean: '따다', englishList: ['optain', 'get']},
+    {korean: '전혀 ', englishList: ['at all', 'completely']},
+    {korean: '중고차 ', englishList: ['at all', 'completely']},
+]);
+const selectedWordIndex = ref(null);
+
+function addWord(){
+// TODO 어휘 추가 기능 구현
+}
 </script>
 
 <template>
@@ -9,33 +24,38 @@
     </div>
 
     <div class="korean-section">
-      <div class="section-label">내가 표현하고 싶은 문장</div>
-      <textarea class="korean-textarea">최근에 운전면허를 땄어.
-차를 살 실력이 전혀 없었는데,
-운전면허를 따니까 차를 사고 싶어지더라.
-그래서 중고차 가격을 알아보는 중이야.</textarea>
+      <div class="label-section">
+        <div class="section-label">내가 표현하고 싶은 문장(한국어)</div>
+      </div>
+      <textarea class="korean-textarea" v-model="koreanInput"/>
     </div>
 
     <div class="options-section">
-      <div class="section-label">문장에 필요한 어휘</div>
-      <ul class="option-list">
-        <li class="option-item">
-          <button class="delete-btn">×</button>
-          <div class="option-info">
-            <div class="option-text">최근</div>
-            <div class="option-english">- Recently</div>
-            <div class="option-english">- Nowadays</div>
-          </div>
-        </li>
+      <div class="label-section">
+        <div class="section-label">문장에 필요한 어휘</div>
+        <div class="add-word-btn" @click="addWord">+</div>
+<!--        <div class="ai-word-btn">AI 어휘 추천</div>--> <!-- TODO AI 어휘 추천 기능 구현 -->
+      </div>
 
-      </ul>
+      <div class="words">
+        <div class="word-item" v-for="(word, index) in wordList" :key="word.korean" @click="selectedWordIndex = index">
+          {{ word.korean }}
+        </div>
+      </div>
+
+      <div class="option-item" v-if="selectedWordIndex != null">
+        <div class="option-info">
+          <div class="option-text">{{ wordList[selectedWordIndex].korean }}</div>
+          <div class="option-english" v-for="english in wordList[selectedWordIndex].englishList" :key="english">- {{ english }}</div>
+        </div>
+        <button class="delete-word-btn" @click="selectedWordIndex = null">×</button>
+      </div>
     </div>
-
     <div class="result-section">
-      <div class="section-label">내가 표현한 문장</div>
-      <textarea class="english-textarea">Recently, I got a Driver's License.
-I have no idea about buying a car at all but I am feeling like wanting car.
-So I'm finding out used car.</textarea>
+      <div class="label-section">
+        <div class="section-label">내가 표현한 문장(영어)</div>
+      </div>
+      <textarea class="english-textarea" v-model="englishInput"/>
     </div>
 
     <div class="buttons-container">
@@ -65,10 +85,15 @@ So I'm finding out used car.</textarea>
   border-bottom: 1px solid #e0e0e0;
 }
 
-.section-label {
-  font-size: 0.95rem;
-  color: #555;
+.label-section {
+  display: flex;
+  align-items: center;
   margin-bottom: 10px;
+}
+
+.section-label {
+  font-size: 1rem;
+  color: #555;
   font-weight: 500;
 }
 
@@ -121,10 +146,6 @@ textarea:focus {
   margin-left: 10px;
 }
 
-.option-list {
-  list-style-type: none;
-}
-
 .option-item {
   margin-bottom: 12px;
   display: flex;
@@ -134,10 +155,7 @@ textarea:focus {
   border-radius: var(--border-radius);
   border: 1px solid #e0e0e0;
   background-color: white;
-}
-
-.option-item:hover {
-  background-color: #f0f8ff;
+  margin-top: 15px;
 }
 
 .option-info {
@@ -157,7 +175,36 @@ textarea:focus {
   margin-top: 3px;
 }
 
-.delete-btn {
+.add-word-btn {
+  background-color: #2da562;
+  color: rgba(255, 255, 255, 0.81);
+  border: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 20px;
+  line-height: 1;
+  font-weight: bold;
+  margin-left: 5px;
+}
+
+.ai-word-btn{
+  border: 1px solid;
+  background-color: white;
+  border-radius: 5px;
+  padding: 3px 5px;
+  font-size: 15px;
+  border-right: 5px;
+  margin-left: auto;
+  margin-right: 5px;
+  cursor: pointer;
+}
+
+.delete-word-btn {
   background-color: #efefef;
   color: rgba(92, 92, 92, 0.81);
   border: none;
@@ -171,6 +218,8 @@ textarea:focus {
   transition: background-color 0.3s ease;
   font-size: 12px;
   line-height: 1;
+  margin-top: 5px;
+  margin-bottom: auto;
 }
 
 .result-section {
@@ -213,5 +262,21 @@ textarea:focus {
 .btn-save {
   background-color: var(--primary-color);
   color: white;
+}
+
+.words {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.word-item {
+  background-color: #f0f0f0; /* 배경색 */
+  border-radius: 20px; /* 둥근 모서리 */
+  padding: 4px 8px; /* 여백 조정 */
+  font-size: 16px; /* 글자 크기 */
+  display: flex; /* Flexbox를 사용하여 수평 정렬 */
+  align-items: center; /* 수직으로 중앙 정렬 */
+  cursor: pointer;
 }
 </style>
