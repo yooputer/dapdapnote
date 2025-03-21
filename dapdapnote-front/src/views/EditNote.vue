@@ -11,6 +11,7 @@ const noteSeq = ref(route.params.noteSeq || null);
 const koreanInput = ref('');
 const englishInput = ref('');
 const wordList = ref([]);
+const noteStatus = ref('UNSOLVED');
 const selectedWordIndex = ref(null);
 
 onMounted(() => {
@@ -32,6 +33,7 @@ function init(note){
   koreanInput.value = note.korean;
   englishInput.value = note.english;
   wordList.value = note.expressionList;
+  noteStatus.value = note.status;
 }
 
 function saveWord(word, index){
@@ -65,7 +67,8 @@ function saveNote(){
     seq: noteSeq.value ? Number(noteSeq.value) : null,
     korean: koreanInput.value,
     english: englishInput.value,
-    expressionList: [...wordList.value]
+    expressionList: [...wordList.value],
+    status: noteStatus.value
   }
 
   api.post(`/api/note/save`, saveForm)
@@ -137,9 +140,9 @@ function saveNote(){
   </div>
 
   <div class="buttons-container">
-    <select class="status-select">
-      <option value="unsolved">미해결</option>
-      <option value="solved">해결</option>
+    <select class="status-select" v-model="noteStatus">
+      <option value="UNSOLVED">미해결</option>
+      <option value="SOLVED">해결</option>
     </select>
     <button class="btn btn-save" @click="saveNote">저장</button>
   </div>
