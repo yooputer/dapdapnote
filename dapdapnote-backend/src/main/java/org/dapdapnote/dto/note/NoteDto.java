@@ -1,7 +1,7 @@
 package org.dapdapnote.dto.note;
 
 import lombok.*;
-import org.dapdapnote.dto.expression.EditExpressionResponse;
+import org.dapdapnote.dto.expression.ExpressionDto;
 import org.dapdapnote.entity.Note;
 
 import java.util.List;
@@ -11,18 +11,18 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
-public class EditNoteResponse {
+public class NoteDto {
     private Long seq;
     private String korean;
     private String english;
-    private List<EditExpressionResponse> expressionList;
+    private List<ExpressionDto> expressionList;
     private String status;
 
-    public EditNoteResponse(Note note) {
+    public NoteDto(Note note) {
         seq = note.getSeq();
         korean = note.getKorean();
         english = note.getEnglish();
-        expressionList = note.getExpressions().stream().map(EditExpressionResponse::new).toList();
+        expressionList = note.getExpressions().stream().map(ExpressionDto::new).toList();
         status = note.getStatus();
     }
 }

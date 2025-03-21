@@ -11,12 +11,12 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
-public class EditExpressionResponse {
+public class ExpressionDto {
     private Long seq;
     private String korean;
     private List<String> englishList;
 
-    public EditExpressionResponse(Expression expression) {
+    public ExpressionDto(Expression expression) {
         this.seq = expression.getSeq();
         this.korean = expression.getKorean();
         this.englishList = ListUtil.jsonToStringList(expression.getEnglishList());

@@ -2,7 +2,7 @@ package org.dapdapnote.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.dapdapnote.dto.note.SaveNoteRequest;
-import org.dapdapnote.dto.note.EditNoteResponse;
+import org.dapdapnote.dto.note.NoteDto;
 import org.dapdapnote.service.NoteService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,8 +21,8 @@ public class NoteController {
     }
 
     @GetMapping("/edit/{noteSeq}")
-    public ResponseEntity<EditNoteResponse> getNoteForEdit(@PathVariable Long noteSeq) {
-        EditNoteResponse response = noteService.getNoteForEdit(noteSeq);
+    public ResponseEntity<NoteDto> getNoteForEdit(@PathVariable Long noteSeq) {
+        NoteDto response = noteService.getNoteForEdit(noteSeq);
 
         return ResponseEntity.ok(response);
     }

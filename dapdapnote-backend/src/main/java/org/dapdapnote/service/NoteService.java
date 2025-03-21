@@ -3,7 +3,7 @@ package org.dapdapnote.service;
 import lombok.RequiredArgsConstructor;
 import org.dapdapnote.dto.expression.SaveExpressionRequest;
 import org.dapdapnote.dto.note.SaveNoteRequest;
-import org.dapdapnote.dto.note.EditNoteResponse;
+import org.dapdapnote.dto.note.NoteDto;
 import org.dapdapnote.entity.Expression;
 import org.dapdapnote.entity.Note;
 import org.dapdapnote.entity.User;
@@ -158,10 +158,10 @@ public class NoteService {
      * @param noteSeq
      * @return EditNoteResponse
      */
-    public EditNoteResponse getNoteForEdit(Long noteSeq) {
+    public NoteDto getNoteForEdit(Long noteSeq) {
         Note note = noteRepository.findById(noteSeq)
                 .orElseThrow(() -> new RuntimeException("note not found. seq=" + noteSeq));
 
-        return new EditNoteResponse(note);
+        return new NoteDto(note);
     }
 }
