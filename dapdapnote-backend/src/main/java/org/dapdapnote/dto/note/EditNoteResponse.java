@@ -23,5 +23,6 @@ public class EditNoteResponse {
         korean = note.getKorean();
         english = note.getEnglish();
         expressionList = note.getExpressions().stream().map(EditExpressionResponse::new).toList();
+        status = note.getStatus();
     }
 }

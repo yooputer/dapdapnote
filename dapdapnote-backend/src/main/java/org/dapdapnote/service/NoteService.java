@@ -68,6 +68,7 @@ public class NoteService {
                 .korean(request.getKorean())
                 .english(request.getEnglish())
                 .writer(request.getWriter())
+                .status(request.getStatus())
                 .build();
         noteRepository.save(note);
 
@@ -92,6 +93,7 @@ public class NoteService {
         note.setKorean(request.getKorean());
         note.setEnglish(request.getEnglish());
         note.setExpressions(SetUtil.objectListToSet(expressionList));
+        note.setStatus(request.getStatus());
         noteRepository.save(note);
 
         return note;

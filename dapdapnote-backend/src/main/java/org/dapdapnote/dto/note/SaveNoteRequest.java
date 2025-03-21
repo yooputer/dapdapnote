@@ -14,6 +14,7 @@ public class SaveNoteRequest {
     private String korean;
     private String english;
     private List<SaveExpressionRequest> expressionList;
+    private String status;
 
     // Back에서 세팅
     private User writer;

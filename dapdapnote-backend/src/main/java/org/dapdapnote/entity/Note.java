@@ -29,6 +29,9 @@ public class Note {
     @Column(nullable = true)
     private String english;
 
+    @Column(nullable = false)
+    private String status;
+
     @ManyToOne
     @JoinColumn(name = "writer_seq", nullable = false)
     private User writer;
