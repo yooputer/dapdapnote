@@ -1,19 +1,38 @@
 <script setup>
-import {ref} from "vue";
+import { onMounted, ref} from "vue";
+import { useRoute } from 'vue-router';
 import EditWordModal from "@/components/EditWordModal.vue";
+import api from "@/api/api";
 
+const route = useRoute();
 const showModal = ref(false);
 const modalType = ref('');
-const koreanInput = ref('최근에 운전면허를 땄어. \n차를 살 생각이 전혀 없었는데, \n운전면허를 따니까 차를 사고 싶어지더라. \n그래서 중고차 가격을 알아보는 중이야');
+const noteSeq = ref(route.params.noteSeq || null);
+const koreanInput = ref('');
 const englishInput = ref('');
-const wordList = ref([
-    {korean: '최근', englishList: ['Recently', 'Nowadays']},
-    {korean: '운전면허', englishList: ['Driver\'s License']},
-    {korean: '따다', englishList: ['optain', 'get']},
-    {korean: '전혀 ', englishList: ['at all', 'completely']},
-    {korean: '중고차 ', englishList: ['at all', 'completely']},
-]);
+const wordList = ref([]);
 const selectedWordIndex = ref(null);
+
+onMounted(() => {
+  if (noteSeq.value){
+    api.get(`/api/note/edit/${noteSeq.value}`)
+        .then(response => {
+          if (response.status == 200){
+            init(response.data)
+          }
+        })
+        .catch(error => {
+          console.log(error);
+          alert("api 오류");
+        });
+  }
+})
+
+function init(note){
+  koreanInput.value = note.korean;
+  englishInput.value = note.english;
+  wordList.value = note.expressionList;
+}
 
 function saveWord(word, index){
   if (!index) {
@@ -34,6 +53,34 @@ function openEditWordModal(isNew = false){
   }
   modalType.value = 'editWord';
   showModal.value = true;
+}
+
+function saveNote(){
+  if (!koreanInput.value || !koreanInput.value.trim()){
+    alert('내용을 입력해주세요');
+    return;
+  }
+
+  let saveForm = {
+    seq: noteSeq.value ? Number(noteSeq.value) : null,
+    korean: koreanInput.value,
+    english: englishInput.value,
+    expressionList: [...wordList.value]
+  }
+
+  api.post(`/api/note/save`, saveForm)
+      .then(response => {
+        if (response.status === 200) {
+          alert("저장 성공");
+          console.log("noteSeq", response.data);
+        }else{
+          alert("저장 실패. status="+response.status);
+        }
+      })
+      .catch(error => {
+        console.log(error)
+        alert("저장 오류")
+      });
 }
 </script>
 
@@ -94,7 +141,7 @@ function openEditWordModal(isNew = false){
       <option value="unsolved">미해결</option>
       <option value="solved">해결</option>
     </select>
-    <button class="btn btn-save">저장</button>
+    <button class="btn btn-save" @click="saveNote">저장</button>
   </div>
 </template>
 

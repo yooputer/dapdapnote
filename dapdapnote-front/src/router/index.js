@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import Home from '@/views/Home.vue';
 import MyNote from '@/views/MyNote.vue';
 import GroupNote from '@/views/GroupNote.vue';
+import CreateNote from '@/views/EditNote.vue'
 import EditNote from '@/views/EditNote.vue'
 
 const routes = [
@@ -21,7 +22,12 @@ const routes = [
         component: GroupNote
     },
     {
-        path: '/edit',
+        path: '/create',
+        name: 'CreateNote',
+        component: CreateNote
+    },
+    {
+        path: '/edit/:noteSeq',
         name: 'EditNote',
         component: EditNote
     },
