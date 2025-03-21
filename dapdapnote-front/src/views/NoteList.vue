@@ -19,7 +19,7 @@ onMounted(() => {
 })
 
 function goToDetail(noteSeq){
-  router.push({ path: '/edit/'+noteSeq });
+  router.push({ path: '/note/edit/'+noteSeq });
 }
 
 </script>
@@ -54,7 +54,7 @@ function goToDetail(noteSeq){
   </div>
 
 
-  <router-link class="create-link" to="/create">+</router-link>
+  <router-link class="create-link" to="/note/create">+</router-link>
 </template>
 
 <style scoped>
