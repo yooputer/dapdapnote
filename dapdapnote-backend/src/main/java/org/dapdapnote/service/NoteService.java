@@ -2,6 +2,7 @@ package org.dapdapnote.service;
 
 import lombok.RequiredArgsConstructor;
 import org.dapdapnote.dto.expression.SaveExpressionRequest;
+import org.dapdapnote.dto.note.NoteListDto;
 import org.dapdapnote.dto.note.SaveNoteRequest;
 import org.dapdapnote.dto.note.NoteDto;
 import org.dapdapnote.entity.Expression;
@@ -45,6 +46,16 @@ public class NoteService {
     }
 
     /**
+     * 노트 목록 조회
+     * @return List<NoteListDto>
+     */
+    public List<NoteListDto> getList() {
+        return noteRepository.findAll().stream()
+                .map(NoteListDto::new)
+                .toList();
+    }
+
+    /**
      * Note 저장
      * @param request
      * @return noteSeq
@@ -75,6 +86,7 @@ public class NoteService {
         List<Expression> expressionList = saveExpressionList(request, note);
 
         note.setExpressions(SetUtil.objectListToSet(expressionList));
+        note.setExpressionCnt(note.getExpressions().size());
         noteRepository.save(note);
 
         return note;
@@ -93,6 +105,7 @@ public class NoteService {
         note.setKorean(request.getKorean());
         note.setEnglish(request.getEnglish());
         note.setExpressions(SetUtil.objectListToSet(expressionList));
+        note.setExpressionCnt(note.getExpressions().size());
         note.setStatus(request.getStatus());
         noteRepository.save(note);
 

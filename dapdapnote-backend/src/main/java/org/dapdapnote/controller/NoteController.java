@@ -1,17 +1,27 @@
 package org.dapdapnote.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.dapdapnote.dto.note.NoteListDto;
 import org.dapdapnote.dto.note.SaveNoteRequest;
 import org.dapdapnote.dto.note.NoteDto;
 import org.dapdapnote.service.NoteService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/note")
 public class NoteController {
     private final NoteService noteService;
+
+    @GetMapping("/list")
+    public ResponseEntity<List<NoteListDto>> getList() {
+        List<NoteListDto> noteList = noteService.getList();
+
+        return ResponseEntity.ok(noteList);
+    }
 
     @PostMapping("/save")
     public ResponseEntity<Long> editNote(@RequestBody SaveNoteRequest request) {

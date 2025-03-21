@@ -69,7 +69,8 @@ npm run serve
 | 노트 수정 | /edit/:noteSeq |
 ---
 ### API 목록
-| 설명             | 메소드  | url                      |
-|----------------|------|--------------------------|
-| 노트 저장          | POST | /api/note/save           |
-| 노트 수정 정보 조회  | GET  | /api/note/edit/{noteSeq} |
+| 설명          | 메소드  | url                      |
+|-------------|------|--------------------------|
+| 노트 목록 조회    | GET  | /api/note/list           |
+| 노트 저장       | POST | /api/note/save           |
+| 노트 수정 정보 조회 | GET  | /api/note/edit/{noteSeq} |

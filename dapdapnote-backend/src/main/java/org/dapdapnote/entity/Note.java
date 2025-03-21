@@ -3,6 +3,7 @@ package org.dapdapnote.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -39,6 +40,11 @@ public class Note {
     @ManyToMany(mappedBy = "notes", fetch = FetchType.LAZY)
     @Builder.Default
     private Set<Expression> expressions = new HashSet<>();
+
+    @Column(nullable = false)
+    @ColumnDefault("0")
+    @Builder.Default
+    private Integer expressionCnt = 0;
 
     @CreatedDate
     private LocalDateTime regDate;
