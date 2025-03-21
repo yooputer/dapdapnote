@@ -181,8 +181,8 @@ h1 {
 
 .create-link {
   position: fixed;
-  bottom: 2rem;
-  right: 2rem;
+  bottom: 5rem;
+  right: 1.3rem;
   width: 3.5rem;
   height: 3.5rem;
   background-color: #3b7edd;
