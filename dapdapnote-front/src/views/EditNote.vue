@@ -87,7 +87,7 @@ function saveNote(){
 <template>
   <EditWordModal
       v-if="showModal && modalType === 'editWord'"
-      :word="selectedWordIndex ? wordList[selectedWordIndex] : {}"
+      :word="selectedWordIndex != null ? wordList[selectedWordIndex] : {}"
       :index="selectedWordIndex"
       @saveWord="saveWord"
       @closeModal="showModal = false; modalType = ''"
@@ -125,7 +125,7 @@ function saveNote(){
       </div>
       <div class="option-actions">
         <button class="option-btn delete-btn" @click="deleteWord">삭제</button>
-        <button class="option-btn edit-btn" @click="openEditWordModal">수정</button>
+        <button class="option-btn edit-btn" @click="openEditWordModal(false)">수정</button>
       </div>
     </div>
   </div>
