@@ -26,7 +26,7 @@ public class Note {
     @Column(nullable = false)
     private String korean;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String english;
 
     @ManyToOne
