@@ -2,6 +2,7 @@ package org.dapdapnote.service;
 
 import lombok.RequiredArgsConstructor;
 import org.dapdapnote.dto.expression.SaveExpressionRequest;
+import org.dapdapnote.dto.note.NoteSearchOptions;
 import org.dapdapnote.dto.note.NoteListDto;
 import org.dapdapnote.dto.note.SaveNoteRequest;
 import org.dapdapnote.dto.note.NoteDto;
@@ -9,8 +10,9 @@ import org.dapdapnote.entity.Expression;
 import org.dapdapnote.entity.Note;
 import org.dapdapnote.entity.User;
 import org.dapdapnote.repository.ExpressionRepository;
-import org.dapdapnote.repository.NoteRepository;
+import org.dapdapnote.repository.note.NoteRepository;
 import org.dapdapnote.repository.UserRepository;
+import org.dapdapnote.repository.note.NoteRepositoryCustom;
 import org.dapdapnote.utils.ListUtil;
 import org.dapdapnote.utils.SetUtil;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,7 @@ import java.util.List;
 public class NoteService {
     private final UserRepository userRepository;
     private final NoteRepository noteRepository;
+    private final NoteRepositoryCustom noteRepositoryCustom;
     private final ExpressionRepository expressionRepository;
 
     /**
@@ -49,9 +52,9 @@ public class NoteService {
      * 노트 목록 조회
      * @return List<NoteListDto>
      */
-    public List<NoteListDto> getList() {
-        return noteRepository.findAll().stream()
-                .map(NoteListDto::new)
+    public List<NoteListDto> getList(NoteSearchOptions searchOptions) {
+        return noteRepositoryCustom.searchAll(searchOptions)
+                .stream().map(NoteListDto::new)
                 .toList();
     }
 

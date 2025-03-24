@@ -1,4 +1,4 @@
-package org.dapdapnote.repository;
+package org.dapdapnote.repository.note;
 
 
 import org.dapdapnote.entity.Note;

@@ -1,17 +1,21 @@
 package org.dapdapnote;
 
+import org.dapdapnote.dto.note.NoteSearchOptions;
 import org.dapdapnote.entity.Expression;
 import org.dapdapnote.entity.Note;
 import org.dapdapnote.entity.User;
 import org.dapdapnote.repository.ExpressionRepository;
-import org.dapdapnote.repository.NoteRepository;
+import org.dapdapnote.repository.note.NoteRepository;
 import org.dapdapnote.repository.UserRepository;
+import org.dapdapnote.repository.note.NoteRepositoryCustom;
 import org.junit.jupiter.api.Test;
 import org.mockito.internal.util.collections.Sets;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.annotation.Rollback;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -27,6 +31,9 @@ public class JpaTest {
 
     @Autowired
     private ExpressionRepository expressionRepository;
+
+    @Autowired
+    private NoteRepositoryCustom noteRepositoryCustom;
 
     @Test
     public void testCreateUser() {
@@ -80,5 +87,17 @@ public class JpaTest {
         Note savedNote = noteRepository.findById(noteSeq).orElseThrow();
 
         assertThat(savedNote.getExpressions().size()).isEqualTo(2);
+    }
+
+    @Test
+    public void testSearchNote(){
+        NoteSearchOptions searchOptions = new NoteSearchOptions();
+        searchOptions.setSearchKeyword("KOREAN");
+        searchOptions.setSearchType("문장");
+
+        List<Note> result = noteRepositoryCustom.searchAll(searchOptions);
+
+
+        System.out.println(result.size());
     }
 }
