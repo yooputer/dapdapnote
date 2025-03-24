@@ -1,12 +1,28 @@
 <script setup>
-import {onMounted, ref} from "vue";
+import {computed, onMounted, ref} from "vue";
 import router from "@/router";
 import api from "@/api/api";
 
 const noteList = ref([]);
+const searchType = ref('KOREAN');
+const searchKeyword = ref('');
+const filter = ref({ onlyUnsolved: false, onlyToday: false });
+const isAll = computed(() => Object.values(filter.value).every(value => value === false));
 
 onMounted(() => {
-  api.get(`/api/note/list`)
+  fetchNoteList();
+})
+
+function fetchNoteList(){
+  const onlyUnsolved = filter.value.onlyUnsolved;
+  const onlyToday = filter.value.onlyToday;
+
+  let url = `/api/note/list?onlyUnsolved=${onlyUnsolved}&onlyToday=${onlyToday}`;
+  if (searchKeyword.value) {
+    url += `&searchType=${searchType.value}&searchKeyword=${searchKeyword.value}`;
+  }
+
+  api.get(url)
       .then(response => {
         if (response.status == 200){
           noteList.value = response.data;
@@ -16,26 +32,47 @@ onMounted(() => {
         console.log(error);
         alert("api 오류");
       });
-})
+}
 
 function goToDetail(noteSeq){
   router.push({ path: '/note/edit/'+noteSeq });
 }
 
+function setFilter(filterType){
+  if (filterType == 'all') {
+    Object.entries(filter.value).forEach(([key, value]) => {
+      filter.value[key] = false;
+    });
+  }else{
+    filter.value[filterType] = !filter.value[filterType];
+  }
+
+  fetchNoteList();
+}
+
 </script>
 
 <template>
-<!--  <header>-->
-<!--    <div class="header-content">-->
-<!--      <h1></h1>-->
-<!--    </div>-->
+  <header>
+    <div class="header-content">
+      <h1></h1>
 
-<!--    <div class="category-tabs">-->
-<!--      <div class="category-tab active">전체</div>-->
-<!--      <div class="category-tab">TODAY</div>-->
-<!--      <div class="category-tab">UNSOLVED</div>-->
-<!--    </div>-->
-<!--  </header>-->
+    </div>
+    <div class="search-bar">
+      <select class="search-select" v-model="searchType">
+        <option value="KOREAN">한국어</option>
+        <option value="ENGLISH">영어</option>
+      </select>
+      <input type="text" placeholder="검색어를 입력하세요" v-model="searchKeyword">
+      <span class="search-icon" @click="fetchNoteList">🔍</span>
+    </div>
+
+    <div class="category-tabs">
+      <div class="category-tab" :class="isAll ? 'active' : ''" @click="setFilter('all')">전체</div>
+      <div class="category-tab" :class="filter.onlyUnsolved ? 'active': ''" @click="setFilter('onlyUnsolved')">미해결</div>
+      <div class="category-tab" :class="filter.onlyToday ? 'active': ''" @click="setFilter('onlyToday')">TODAY</div>
+    </div>
+  </header>
 
   <div class="board-list">
     <div class="board-row" v-for="note in noteList" :key="note.seq">
@@ -88,6 +125,14 @@ h1 {
   align-items: center;
 }
 
+.search-bar select {
+  padding: 5px;
+  border-radius: 10px;
+  border: 1px solid #e0e0e0;
+  background-color: white;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
 .search-bar input {
   width: 100%;
   border: none;
@@ -99,6 +144,7 @@ h1 {
 .search-icon {
   color: #999;
   margin-right: 0.5rem;
+  cursor: pointer;
 }
 
 .board-list{
@@ -199,7 +245,7 @@ h1 {
 .category-tabs {
   display: flex;
   overflow-x: auto;
-  padding: 0.5rem 1rem;
+  padding-top: 5px;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
 }
