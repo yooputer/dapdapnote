@@ -8,17 +8,20 @@ import org.dapdapnote.dto.note.SaveNoteRequest;
 import org.dapdapnote.dto.note.NoteDto;
 import org.dapdapnote.entity.Expression;
 import org.dapdapnote.entity.Note;
+import org.dapdapnote.entity.NoteExpression;
 import org.dapdapnote.entity.User;
-import org.dapdapnote.repository.ExpressionRepository;
+import org.dapdapnote.repository.expression.ExpressionRepository;
 import org.dapdapnote.repository.note.NoteRepository;
 import org.dapdapnote.repository.UserRepository;
 import org.dapdapnote.repository.note.NoteRepositoryCustom;
+import org.dapdapnote.repository.note_expression.NoteExpressionRepository;
 import org.dapdapnote.utils.ListUtil;
-import org.dapdapnote.utils.SetUtil;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +30,7 @@ public class NoteService {
     private final NoteRepository noteRepository;
     private final NoteRepositoryCustom noteRepositoryCustom;
     private final ExpressionRepository expressionRepository;
+    private final NoteExpressionRepository noteExpressionRepository;
 
     /**
      * 테스트유저 조회
@@ -87,9 +91,8 @@ public class NoteService {
         noteRepository.save(note);
 
         List<Expression> expressionList = saveExpressionList(request, note);
-
-        note.setExpressions(SetUtil.objectListToSet(expressionList));
-        note.setExpressionCnt(note.getExpressions().size());
+        note.setNoteExpressions(saveNoteExpression(note, expressionList));
+        note.setExpressionCnt(note.getNoteExpressions().size());
         noteRepository.save(note);
 
         return note;
@@ -107,8 +110,8 @@ public class NoteService {
 
         note.setKorean(request.getKorean());
         note.setEnglish(request.getEnglish());
-        note.setExpressions(SetUtil.objectListToSet(expressionList));
-        note.setExpressionCnt(note.getExpressions().size());
+        note.setNoteExpressions(saveNoteExpression(note, expressionList));
+        note.setExpressionCnt(note.getNoteExpressions().size());
         note.setStatus(request.getStatus());
         noteRepository.save(note);
 
@@ -146,7 +149,6 @@ public class NoteService {
                 .korean(expressionRequest.getKorean())
                 .englishList(ListUtil.listToJson(expressionRequest.getEnglishList()))
                 .writer(expressionRequest.getWriter())
-                .notes(SetUtil.objectToSet(expressionRequest.getNote()))
                 .build();
         expressionRepository.save(expression);
 
@@ -163,10 +165,31 @@ public class NoteService {
 
         expression.setKorean(expressionRequest.getKorean());
         expression.setEnglishList(ListUtil.listToJson(expressionRequest.getEnglishList()));
-        expression.getNotes().add(expressionRequest.getNote());
         expressionRepository.save(expression);
 
         return expression;
+    }
+
+    /**
+     * NoteExpression 저장
+     * @param note
+     * @param expressionList
+     * @return Set<NoteExpression>
+     */
+    private Set<NoteExpression> saveNoteExpression(Note note, List<Expression> expressionList) {
+        Set<NoteExpression> noteExpressions = new HashSet<>();
+        int index = 1;
+        for (Expression expression : expressionList){
+            NoteExpression noteExpression = noteExpressionRepository.findByNoteAndExpression(note, expression)
+                    .orElse(new NoteExpression(note, expression));
+
+            noteExpression.setExpressionOrder(index++);
+
+            noteExpressionRepository.save(noteExpression);
+            noteExpressions.add(noteExpression);
+        }
+
+        return noteExpressions;
     }
 
     /**

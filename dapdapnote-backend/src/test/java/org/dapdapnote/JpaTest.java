@@ -4,7 +4,7 @@ import org.dapdapnote.dto.note.NoteSearchOptions;
 import org.dapdapnote.entity.Expression;
 import org.dapdapnote.entity.Note;
 import org.dapdapnote.entity.User;
-import org.dapdapnote.repository.ExpressionRepository;
+import org.dapdapnote.repository.expression.ExpressionRepository;
 import org.dapdapnote.repository.note.NoteRepository;
 import org.dapdapnote.repository.UserRepository;
 import org.dapdapnote.repository.note.NoteRepositoryCustom;

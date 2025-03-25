@@ -26,11 +26,11 @@ public class QNote extends EntityPathBase<Note> {
 
     public final NumberPath<Integer> expressionCnt = createNumber("expressionCnt", Integer.class);
 
-    public final SetPath<Expression, QExpression> expressions = this.<Expression, QExpression>createSet("expressions", Expression.class, QExpression.class, PathInits.DIRECT2);
-
     public final StringPath korean = createString("korean");
 
     public final DateTimePath<java.time.LocalDateTime> modDate = createDateTime("modDate", java.time.LocalDateTime.class);
+
+    public final SetPath<NoteExpression, QNoteExpression> noteExpressions = this.<NoteExpression, QNoteExpression>createSet("noteExpressions", NoteExpression.class, QNoteExpression.class, PathInits.DIRECT2);
 
     public final DateTimePath<java.time.LocalDateTime> regDate = createDateTime("regDate", java.time.LocalDateTime.class);
 

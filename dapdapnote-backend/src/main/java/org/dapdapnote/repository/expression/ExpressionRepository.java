@@ -1,4 +1,4 @@
-package org.dapdapnote.repository;
+package org.dapdapnote.repository.expression;
 
 
 import org.dapdapnote.entity.Expression;
