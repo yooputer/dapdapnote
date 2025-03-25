@@ -3,7 +3,9 @@ package org.dapdapnote.dto.note;
 import lombok.*;
 import org.dapdapnote.dto.expression.ExpressionDto;
 import org.dapdapnote.entity.Note;
+import org.dapdapnote.entity.NoteExpression;
 
+import java.util.Comparator;
 import java.util.List;
 
 @NoArgsConstructor
@@ -22,7 +24,12 @@ public class NoteDto {
         seq = note.getSeq();
         korean = note.getKorean();
         english = note.getEnglish();
-        expressionList = note.getExpressions().stream().map(ExpressionDto::new).toList();
         status = note.getStatus();
+
+        expressionList = note.getNoteExpressions().stream()
+                .sorted(Comparator.comparingInt(NoteExpression::getExpressionOrder))
+                .map(NoteExpression::getExpression)
+                .map(ExpressionDto::new)
+                .toList();
     }
 }
