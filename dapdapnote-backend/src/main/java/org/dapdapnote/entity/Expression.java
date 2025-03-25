@@ -32,14 +32,9 @@ public class Expression {
     @JoinColumn(name = "writer_seq", nullable = false)
     private User writer;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "note_expression",
-            joinColumns = @JoinColumn(name = "note_seq"),
-            inverseJoinColumns = @JoinColumn(name = "expression_seq")
-    )
+    @OneToMany(mappedBy = "expression", cascade = CascadeType.ALL)
     @Builder.Default
-    private Set<Note> notes = new HashSet<>();
+    private Set<NoteExpression> noteExpressions = new HashSet<>();
 
     @CreatedDate
     private LocalDateTime regDate;

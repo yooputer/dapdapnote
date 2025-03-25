@@ -17,16 +17,19 @@ const emits = defineEmits([
     'closeModal'
 ]);
 
-const koreanWordInput = ref(props.word.korean || '');
-const englishWordListInput = ref(JSON.parse(JSON.stringify(props.word.englishList || [''])));
+const word = ref({
+  seq: props.word.seq || null,
+  korean: props.word.korean || '',
+  englishList: JSON.parse(JSON.stringify(props.word.englishList || ['']))
+})
 
 function deleteWord(index){
-  englishWordListInput.value.splice(index, 1);
+  word.value.englishList.splice(index, 1);
 }
 
 function saveWord(){
-  const ki = koreanWordInput.value;
-  const eil = [...englishWordListInput.value];
+  const ki = word.value.korean;
+  const eil = [...word.value.englishList];
 
   // 유효성 체크
   if (!ki || !ki.trim()){
@@ -41,6 +44,7 @@ function saveWord(){
   }
 
   const newWord = {
+    seq: word.value.seq,
     korean: ki,
     englishList: eil
   }
@@ -61,18 +65,18 @@ function saveWord(){
           <div class="section-label">한국어</div>
         </div>
 
-        <input class="korean-input" v-model="koreanWordInput"/>
+        <input class="korean-input" v-model="word.korean"/>
       </div>
 
       <div class="english-section">
         <div class="label-section">
           <div class="section-label">영어</div>
-          <div class="add-row-btn" @click="englishWordListInput.push('')">+</div>
+          <div class="add-row-btn" @click="word.englishList.push('')">+</div>
         </div>
 
-        <div class="english-row" v-for="(english, index) in englishWordListInput" :key="index">
+        <div class="english-row" v-for="(english, index) in word.englishList" :key="index">
           <button class="delete-word-btn" @click="deleteWord(index)">×</button>
-          <input v-model="englishWordListInput[index]"/>
+          <input v-model="word.englishList[index]"/>
         </div>
       </div>
 
